@@ -67,13 +67,32 @@ students связана с groups. Каждый студент находитс�
 
 **Сформулированные аналитические вопросы:**
 
-1. Какие студенты ни разу не записывались на курсы? Сколько их и к каким группам они относятся?
-2. Сколько студентов в каждой группе?
-3. Сколько студентов записалось на самое большое количество курсов?
-4. На какой курс больше всего записей?
-5. На каком курсе больше всего результатов "100"?
-
+1. Какие студенты ни разу не записывались на курсы? Сколько их и к каким группам они относятся?(`students`, `groups`, `enrollments`)
+2. Сколько студентов в каждой группе?(`students`, `groups`)
+3. Сколько студентов записалось на самое большое количество курсов?( `enrollments`)
+4. На какой курс больше всего записей?(`courses`, `enrollments`)
+5. На каком курсе больше всего результатов "100"?(`courses`, `enrollments`, `results`)
+6. Какие студенты учаться в конкретной группе?(`students`)
+7. В каких группах учится более 15 студентов?(`students`)
 ## Шаг 3. Фильтрация и сортировка
+
+### 2 Вопрос
+
+```sql
+SELECT group_id, COUNT(id) FROM students GROUP BY group_id
+```
+10
+
+Связь students и groups. Смотрим сколько студентов в каждой группе.
+
+### 6 Вопрос
+
+```sql
+SELECT full_name , group_id FROM students WHERE group_id=1
+```
+Связь students и group. Через group_id считаем студентов с одинаковым значением.
+
+## Шаг 4. Агрегирование и группировка
 
 ### 2 Вопрос
 
@@ -90,19 +109,12 @@ SELECT group_id, COUNT(id) FROM students GROUP BY group_id
 SELECT student_id, COUNT(course_id) AS course_count FROM enrollments GROUP BY student_id ORDER BY course_count DESC;
 ```
 
-
-Связь students и courses через enrollments. Смотрим через enrollments сколько курсов у студентов.
-
-
-
-
-
 ### 4 Вопрос
 
 ```sql
 SELECT course_id, COUNT(student_id) AS student_count FROM enrollments GROUP BY course_id ORDER BY student_count DESC;
 ```
-Связь students и courses через enrollments.
+Связь students и courses через enrollments. Через поступления смотрим сколько студентов имеет одниковое id курсы.
 
 ### 5 Вопрос
 
@@ -110,13 +122,36 @@ SELECT course_id, COUNT(student_id) AS student_count FROM enrollments GROUP BY c
 SELECT course_id, COUNT(*) FROM enrollments JOIN results ON enrollments.id = results.enrollment_id WHERE results.score = 100 GROUP BY course_id ORDER BY COUNT(*) DESC
 ```
 
-Связь students и courses через enrollments.
+Связь students и courses через enrollments. Смотрим у каких студентов score равен 100.
+
+### 7 Вопрос
+
+```sql
+SELECT group_id, COUNT(id) AS student_count FROM students GROUP BY group_id HAVING COUNT(id) > 15;
+```
+
+Связь students с group_id. Смотрим чтобы у группы было более 15 студентов.
+
+Разница where и having. Having фильтрует группы, а Where отдельные строки.
+
+## Шаг 5. Объединение связанных таблиц
+
+### 5 Вопрос
+
+```sql
+SELECT course_id, COUNT(*) FROM enrollments JOIN results ON enrollments.id = results.enrollment_id WHERE results.score = 100 GROUP BY course_id ORDER BY COUNT(*) DESC
+```
+
+Связь students и courses через enrollments. Через результаты смотрим id поступления, где выводим курс. JOIN склеивает id , чтобы  по ним можно было искать студента к которому относится score.
+
+### Студенты и названия их групп
+
+```sql
+SELECT students.full_name, groups.group_name AS group_name FROM students INNER JOIN groups ON students.group_id = groups.id LIMIT 10;
+```
 
 
-## Шаг 4. Агрегирование и группировка
-
-
-
-
-
-
+###
+```sql
+SELECT teachers.full_name, courses.course_name FROM teachers INNER JOIN courses ON teachers.id = courses.teacher_id ;
+```
