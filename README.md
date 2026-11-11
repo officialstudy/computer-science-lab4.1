@@ -156,6 +156,47 @@ SELECT students.full_name, courses.course_name FROM students LEFT JOIN enrollmen
 
 ## Шаг 6. Проверка корректности данных
 
+### Есль ли записи на курс несущетсвующих студентов
+
 ```sql
 SELECT COUNT(*) AS nonexistent_enrollments FROM enrollments LEFT JOIN students ON enrollments.student_id = students.id WHERE students.id IS NULL;
 ```
+
+Проверяем есть ли в enrollments id которые не совпадают не с одним из students.id
+
+### Есть ли оценки которые меньше 0 или больше 100
+
+```sql
+SELECT COUNT(*) AS invalid_scores FROM results WHERE score < 0 OR score > 100;
+```
+
+Проверяем если некорректные оценки.
+
+Оба вопроса вернули 0.
+
+## Шаг 7. Индивидуальное аналитическое исследование
+
+Вариант: 6
+
+Какие студенты ни разу не записывались на курсы? Сколько их и к каким группам они относятся?
+
+Соединяем таблицы students и enrollments смотрим у каких студентов не будет совпадений. Затем присоединяем таблицу groups , чтобы узнать в каких группах они обучаются.
+
+Считаем сколько всего студентов без курсов.
+
+```sql
+Select COUNT(students.id) AS students_without_courses  FROM students JOIN groups ON students.group_id = groups.id LEFT JOIN enrollments ON students.id = enrollments.student_id WHERE enrollments.id IS NULL
+```
+Ищем их имена и группы.
+
+```sql
+Select groups.group_name, students.full_name FROM students JOIN groups ON students.group_id = groups.id LEFT JOIN enrollments ON students.id = enrollments.student_id WHERE enrollments.id IS NULL
+```
+
+**Аналитические выводы:**
+
+1. На курс Дискретная математика записалось больше всего человек.
+2.  Курс с наибольшим количеством оценок "100" операционные системы.
+3.  Есть 12 групп с количеством студентов болье 15.
+4.  Есть несколько студентов не записавшихся не на один курс.
+ 
