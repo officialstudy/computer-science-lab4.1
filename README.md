@@ -94,12 +94,7 @@ SELECT full_name , group_id FROM students WHERE group_id=1
 
 ## Шаг 4. Агрегирование и группировка
 
-### 2 Вопрос
 
-```sql
-SELECT group_id, COUNT(id) FROM students GROUP BY group_id
-```
-10
 
 Связь students и groups. Смотрим сколько студентов в каждой группе.
 
@@ -116,13 +111,6 @@ SELECT course_id, COUNT(student_id) AS student_count FROM enrollments GROUP BY c
 ```
 Связь students и courses через enrollments. Через поступления смотрим сколько студентов имеет одниковое id курсы.
 
-### 5 Вопрос
-
-```sql
-SELECT course_id, COUNT(*) FROM enrollments JOIN results ON enrollments.id = results.enrollment_id WHERE results.score = 100 GROUP BY course_id ORDER BY COUNT(*) DESC
-```
-
-Связь students и courses через enrollments. Смотрим у каких студентов score равен 100.
 
 ### 7 Вопрос
 
@@ -149,9 +137,25 @@ SELECT course_id, COUNT(*) FROM enrollments JOIN results ON enrollments.id = res
 ```sql
 SELECT students.full_name, groups.group_name AS group_name FROM students INNER JOIN groups ON students.group_id = groups.id LIMIT 10;
 ```
+Ищет совпадение student.group_id с group.id
 
+### Преподователи и их курсы
 
-###
 ```sql
-SELECT teachers.full_name, courses.course_name FROM teachers INNER JOIN courses ON teachers.id = courses.teacher_id ;
+SELECT teachers.full_name, courses.course_name FROM teachers INNER JOIN courses ON teachers.id = courses.teacher_id;
+```
+
+Смотрит какие преподователи ведут какие курсы
+
+### Студенты и курсы на которые они запсианы.
+
+```sql
+SELECT students.full_name, courses.course_name FROM students LEFT JOIN enrollments ON students.id = enrollments.student_id LEFT JOIN courses ON enrollments.course_id = courses.id;
+```
+С помощью LEFT JOIN выводит студентов котрые никуда не записаны.
+
+## Шаг 6. Проверка корректности данных
+
+```sql
+SELECT COUNT(*) AS nonexistent_enrollments FROM enrollments LEFT JOIN students ON enrollments.student_id = students.id WHERE students.id IS NULL;
 ```
