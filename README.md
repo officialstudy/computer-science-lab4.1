@@ -17,7 +17,12 @@ SELECT COUNT(*) AS total_students FROM students;SELECT COUNT(*) AS total_courses
 
 **Результат:**
 
-
+![1](/images/1.png)
+![1](/images/2.png)
+![1](/images/3.png)
+![1](/images/4.png)
+![1](/images/5.png)
+![1](/images/6.png)
 
 ## Шаг 2. Изучение структуры и формулирование аналитических вопросов
 
@@ -36,17 +41,21 @@ SELECT COUNT(*) AS total_students FROM students;SELECT COUNT(*) AS total_courses
 - enrollments и students, courses
 - results и enrollments
 
-  **Просмотр данных.** Просмотр первых пяти аренд.
+  **Просмотр данных.** Просмотр первых пяти студентов.
 
 ```sql
 SELECT * FROM students LIMIT 5;
 ```
 
-**Результат:**
+![1](/images/7.png)
 
+  **Просмотр данных.** Просмотр первых пяти записей.
+ 
 ```sql
 SELECT * FROM enrollments LIMIT 5;
 ```
+
+![1](/images/8.png)
 
 **Первичные и внешние ключи. Связи между таблицами**
 
@@ -81,7 +90,7 @@ students связана с groups. Каждый студент находитс�
 ```sql
 SELECT group_id, COUNT(id) FROM students GROUP BY group_id
 ```
-10
+![1](/images/10.png)
 
 Связь students и groups. Смотрим сколько студентов в каждой группе.
 
@@ -90,6 +99,8 @@ SELECT group_id, COUNT(id) FROM students GROUP BY group_id
 ```sql
 SELECT full_name , group_id FROM students WHERE group_id=1
 ```
+![1](/images/14.png)
+
 Связь students и group. Через group_id считаем студентов с одинаковым значением.
 
 ## Шаг 4. Агрегирование и группировка
@@ -103,6 +114,7 @@ SELECT full_name , group_id FROM students WHERE group_id=1
 ```sql
 SELECT student_id, COUNT(course_id) AS course_count FROM enrollments GROUP BY student_id ORDER BY course_count DESC;
 ```
+![1](/images/11.png)
 
 ### 4 Вопрос
 
@@ -111,12 +123,15 @@ SELECT course_id, COUNT(student_id) AS student_count FROM enrollments GROUP BY c
 ```
 Связь students и courses через enrollments. Через поступления смотрим сколько студентов имеет одниковое id курсы.
 
+![1](/images/12.png)
 
 ### 7 Вопрос
 
 ```sql
 SELECT group_id, COUNT(id) AS student_count FROM students GROUP BY group_id HAVING COUNT(id) > 15;
 ```
+
+![1](/images/16.png)
 
 Связь students с group_id. Смотрим чтобы у группы было более 15 студентов.
 
@@ -129,7 +144,8 @@ SELECT group_id, COUNT(id) AS student_count FROM students GROUP BY group_id HAVI
 ```sql
 SELECT course_id, COUNT(*) FROM enrollments JOIN results ON enrollments.id = results.enrollment_id WHERE results.score = 100 GROUP BY course_id ORDER BY COUNT(*) DESC
 ```
-
+ 9  
+ 
 Связь students и courses через enrollments. Через результаты смотрим id поступления, где выводим курс. JOIN склеивает id , чтобы  по ним можно было искать студента к которому относится score.
 
 ### Студенты и названия их групп
@@ -137,6 +153,8 @@ SELECT course_id, COUNT(*) FROM enrollments JOIN results ON enrollments.id = res
 ```sql
 SELECT students.full_name, groups.group_name AS group_name FROM students INNER JOIN groups ON students.group_id = groups.id LIMIT 10;
 ```
+![1](/images/17.png)
+
 Ищет совпадение student.group_id с group.id
 
 ### Преподователи и их курсы
@@ -144,6 +162,9 @@ SELECT students.full_name, groups.group_name AS group_name FROM students INNER J
 ```sql
 SELECT teachers.full_name, courses.course_name FROM teachers INNER JOIN courses ON teachers.id = courses.teacher_id;
 ```
+
+![1](/images/18.png)
+![1](/images/19.png)
 
 Смотрит какие преподователи ведут какие курсы
 
@@ -154,6 +175,8 @@ SELECT students.full_name, courses.course_name FROM students LEFT JOIN enrollmen
 ```
 С помощью LEFT JOIN выводит студентов котрые никуда не записаны.
 
+![1](/images/20.png)
+
 ## Шаг 6. Проверка корректности данных
 
 ### Есль ли записи на курс несущетсвующих студентов
@@ -162,6 +185,8 @@ SELECT students.full_name, courses.course_name FROM students LEFT JOIN enrollmen
 SELECT COUNT(*) AS nonexistent_enrollments FROM enrollments LEFT JOIN students ON enrollments.student_id = students.id WHERE students.id IS NULL;
 ```
 
+![1](/images/21.png)
+
 Проверяем есть ли в enrollments id которые не совпадают не с одним из students.id
 
 ### Есть ли оценки которые меньше 0 или больше 100
@@ -169,6 +194,8 @@ SELECT COUNT(*) AS nonexistent_enrollments FROM enrollments LEFT JOIN students O
 ```sql
 SELECT COUNT(*) AS invalid_scores FROM results WHERE score < 0 OR score > 100;
 ```
+
+![1](/images/22.png)
 
 Проверяем если некорректные оценки.
 
@@ -187,11 +214,13 @@ SELECT COUNT(*) AS invalid_scores FROM results WHERE score < 0 OR score > 100;
 ```sql
 Select COUNT(students.id) AS students_without_courses  FROM students JOIN groups ON students.group_id = groups.id LEFT JOIN enrollments ON students.id = enrollments.student_id WHERE enrollments.id IS NULL
 ```
+![1](/images/24.png)
 Ищем их имена и группы.
 
 ```sql
 Select groups.group_name, students.full_name FROM students JOIN groups ON students.group_id = groups.id LEFT JOIN enrollments ON students.id = enrollments.student_id WHERE enrollments.id IS NULL
 ```
+![1](/images/23.png)
 
 **Аналитические выводы:**
 
