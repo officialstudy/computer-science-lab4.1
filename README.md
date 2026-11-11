@@ -144,7 +144,7 @@ SELECT group_id, COUNT(id) AS student_count FROM students GROUP BY group_id HAVI
 ```sql
 SELECT course_id, COUNT(*) FROM enrollments JOIN results ON enrollments.id = results.enrollment_id WHERE results.score = 100 GROUP BY course_id ORDER BY COUNT(*) DESC
 ```
- 9  
+![1](/images/9.png)
  
 Связь students и courses через enrollments. Через результаты смотрим id поступления, где выводим курс. JOIN склеивает id , чтобы  по ним можно было искать студента к которому относится score.
 
